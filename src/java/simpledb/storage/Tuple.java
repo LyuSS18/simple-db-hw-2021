@@ -13,6 +13,12 @@ public class Tuple implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private TupleDesc tupleDesc;
+
+    private RecordId recordId;
+
+    private Field[] fields;
+
     /**
      * Create a new tuple with the specified schema (type).
      *
@@ -22,6 +28,8 @@ public class Tuple implements Serializable {
      */
     public Tuple(TupleDesc td) {
         // some code goes here
+        tupleDesc = td;
+        fields = new Field[tupleDesc.numFields()];
     }
 
     /**
@@ -29,7 +37,7 @@ public class Tuple implements Serializable {
      */
     public TupleDesc getTupleDesc() {
         // some code goes here
-        return null;
+        return this.tupleDesc;
     }
 
     /**
@@ -38,7 +46,7 @@ public class Tuple implements Serializable {
      */
     public RecordId getRecordId() {
         // some code goes here
-        return null;
+        return recordId;
     }
 
     /**
@@ -49,6 +57,7 @@ public class Tuple implements Serializable {
      */
     public void setRecordId(RecordId rid) {
         // some code goes here
+        recordId = rid;
     }
 
     /**
@@ -61,6 +70,9 @@ public class Tuple implements Serializable {
      */
     public void setField(int i, Field f) {
         // some code goes here
+        if(i >= 0 && i < fields.length){
+            fields[i] = f;
+        }
     }
 
     /**
@@ -71,6 +83,9 @@ public class Tuple implements Serializable {
      */
     public Field getField(int i) {
         // some code goes here
+        if(i >= 0 && i < fields.length){
+            return fields[i];
+        }
         return null;
     }
 
@@ -84,7 +99,12 @@ public class Tuple implements Serializable {
      */
     public String toString() {
         // some code goes here
-        throw new UnsupportedOperationException("Implement this");
+        StringBuffer stringBuffer = new StringBuffer();
+        for(int i = 0; i < fields.length - 1; i++){
+            stringBuffer.append(fields[i].toString()+"\t");
+        }
+        stringBuffer.append(fields[fields.length-1].toString());
+        return stringBuffer.toString();
     }
 
     /**
@@ -94,7 +114,20 @@ public class Tuple implements Serializable {
     public Iterator<Field> fields()
     {
         // some code goes here
-        return null;
+        return new Iterator<Field>() {
+            private int cur = -1;
+
+            @Override
+            public boolean hasNext() {
+                return cur <= fields.length - 2;
+            }
+
+            @Override
+            public Field next() {
+                cur++;
+                return fields[cur];
+            }
+        };
     }
 
     /**
@@ -103,5 +136,6 @@ public class Tuple implements Serializable {
     public void resetTupleDesc(TupleDesc td)
     {
         // some code goes here
+        tupleDesc = td;
     }
 }
